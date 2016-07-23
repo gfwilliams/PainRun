@@ -1,3 +1,4 @@
+var texture;
 var camera, scene, renderer;
 var sections = [];
 var sectionOffset = 0;
@@ -8,7 +9,7 @@ init();
 animate();
 
 function newSection() {
-  var section = new Section();
+  var section = new Section(texture);
   section.sectionStart = sectionOffset;
   section.sectionEnd = sectionOffset + section.sectionLength;
   section.group.position.z = section.sectionStart;
@@ -19,6 +20,8 @@ function newSection() {
 }
 
 function init() {
+  texture = new THREE.TextureLoader().load( 'border.png' );
+
 
   camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 100 );
   camera.rotation.x = Math.PI;
@@ -27,7 +30,7 @@ function init() {
   camera.position.z = 4;
 
   scene = new THREE.Scene();
-  scene.fog = new THREE.Fog(0, 10, 15);
+  scene.fog = new THREE.Fog(0, 5, 10);
 
   for (var i=0;i<3;i++) newSection();
 
@@ -74,7 +77,7 @@ function animate() {
 
   TWEEN.update();
   
-  position += 2*timeDiff/1000;
+  position += 4*timeDiff/1000;
   camera.position.z = position;
 
   // now remove old sections

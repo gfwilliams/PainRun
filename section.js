@@ -1,9 +1,8 @@
-function Section() {
+function Section(texture) {
   var section = this;
   this.group = new THREE.Object3D();
   this.tweens = [];
   
-  var texture = new THREE.TextureLoader().load( 'crate.gif' );
   var geometry = new THREE.BoxBufferGeometry( 1, 1, 1);
   var material = new THREE.MeshBasicMaterial( { map: texture } );
   material.side = THREE.DoubleSide;
@@ -41,8 +40,9 @@ function Section() {
     return mesh;
   };
 
+  this.sectionLength = 4;
 
-  for (var z=0.5;z<7;z+=1) {
+  for (var z=0.5;z<this.sectionLength;z+=1) {
     this.box(-1.5, 0.5,z);
     this.box(-1.5,-0.5,z);
     this.box( 1.5, 0.5,z);
@@ -53,10 +53,45 @@ function Section() {
     this.box( 0.5, 1.5,z);
     this.box(-0.5, 1.5,z);
   }
-  this.box(-0.5,0.5,5.5);
-  this.box(1.5,-0.5,3.5).tween().to({x:0.5, ry:1}, 1000);
-  this.box(1.5,0.5,3.5).tween().to({x:0.5, ry:1}, 1000);
-  this.sectionLength = 7;
+
+  var r = Math.floor(Math.random()*8);
+  var r2 = Math.floor(Math.random()*4);
+  var sidex = (r2&1)?1:-1;
+  var sidey = (r2&2)?1:-1;
+  var z = 1.5+Math.floor(Math.random()*3);
+
+  switch (r) {
+    case 0: this.box(1.5*sidex, 1.5*sidey, z).tween().to({rz:1, x:0.5*sidex, y:0.5*sidey}, 1000);
+            break;
+    case 1: this.box(1.5*sidex, 1.5*sidey, z).tween().to({x:0.5*sidex, y:0.5*sidey}, 1000); 
+            break;
+    case 2: this.box(0.5*sidex, 0.5*sidey, z); 
+            break;
+    case 3: this.box(1.5*sidex,-0.5,z).tween().to({x:0.5*sidex, ry:1}, 1000);
+            this.box(1.5*sidex,0.5,z).tween().to({x:0.5*sidex, ry:1}, 1000);  
+            break;
+    case 4: this.box(0.5,1.5*sidey,z).tween().to({y:0.5*sidex, rx:1}, 1000); 
+            this.box(-0.5,1.5*sidex,z).tween().to({y:0.5*sidex, rx:1}, 1000); 
+            break;
+    case 5: // breathe...
+            break;
+    case 6: this.box(0.5*sidex, 0.5*sidey, z);
+            this.box(-0.5*sidex, 0.5*sidey, z);  
+            break;
+    case 6: this.box(0.5*sidex, -0.5*sidey, z);
+            this.box(-0.5*sidex, 0.5*sidey, z);  
+            break;
+    case 6: this.box(0.5*sidex, 0.5*sidey, z);
+            this.box(0.5*sidex, -0.5*sidey, z);  
+            break;
+    case 7: this.box(0.5*sidex, 0.5*sidey, z);
+            this.box(-0.5*sidex, 0.5*sidey, z); 
+            this.box(0.5*sidex, -0.5*sidey, z);  
+            break;
+    //
+    //this.box(1.5,0.5,3.5).tween().to({x:0.5, ry:1}, 1000);
+  }
+  
 }
 
 Section.prototype.start = function() {
