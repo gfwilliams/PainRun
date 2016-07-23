@@ -1,4 +1,5 @@
 var STEREO = true;
+var STEREO_SEP = 0.4;
 
 var materials;
 var camera, scene, renderer;
@@ -58,10 +59,10 @@ function stopGame() {
   context.fillText( "(Click to restart)", 128, 128);
   var texture = mapC = new THREE.Texture(canvas); 
   texture.needsUpdate = true;
-  var spriteMaterial = new THREE.SpriteMaterial( { map: texture, color: 0xffffff } );
+  var spriteMaterial = new THREE.MeshBasicMaterial( { map: texture, color: 0xffffff } );
   spriteMaterial.side = THREE.DoubleSide;
-  spritey = new THREE.Sprite( spriteMaterial );
-  spritey.scale.set(2,1,1);
+  var geo = new THREE.PlaneGeometry( 2, -1 );
+  spritey = new THREE.Mesh( geo, spriteMaterial );
   spritey.position.set(0,0,4);
   scene.add( spritey );
 }
@@ -106,7 +107,7 @@ function init() {
   document.body.appendChild( renderer.domElement );
   if (STEREO) {
     effect = new THREE.StereoEffect( renderer ); 
-    effect.eyeSeparation = 0.4;
+    effect.eyeSeparation = STEREO_SEP;
     effect.setSize( window.innerWidth, window.innerHeight );
   }
 
@@ -162,7 +163,8 @@ function animate() {
     }
   }
   if (spritey) {
-    spritey.rotation.x = Math.sin(time / 200);
+    spritey.rotation.x = Math.sin(time / 200)/20;
+    spritey.rotation.y = Math.sin(time / 123)/20;
   }
 
   camera.position.z = position;
