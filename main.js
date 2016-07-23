@@ -50,6 +50,7 @@ function init() {
 
   //
 
+  renderer.domElement.addEventListener('click', fullscreen, false);
   window.addEventListener( 'resize', onWindowResize, false );
   window.addEventListener( 'keydown', onKeyDown, false );
   window.addEventListener('deviceorientation', setOrientationControls, true);
@@ -131,7 +132,7 @@ function checkGamepad() {
     btns = lastGamepadBtns;
     var v = new THREE.Vector3( 0, 0, -1 );
     v.applyQuaternion( camera.quaternion );
-    var threshMax = 0.3;
+    var threshMax = 0.2;
     var threshMin = 0.1;
     if (btns&1) {
       if (v.y<threshMin) btns &= ~1;
@@ -204,4 +205,17 @@ function animate() {
     effect.render( scene, camera );
   else
     renderer.render( scene, camera );
+}
+
+function fullscreen() {
+  var container = renderer.domElement;
+  if (container.requestFullscreen) {
+    container.requestFullscreen();
+  } else if (container.msRequestFullscreen) {
+    container.msRequestFullscreen();
+  } else if (container.mozRequestFullScreen) {
+    container.mozRequestFullScreen();
+  } else if (container.webkitRequestFullscreen) {
+    container.webkitRequestFullscreen();
+  }
 }
