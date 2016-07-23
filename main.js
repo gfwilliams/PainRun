@@ -2,6 +2,7 @@ var STEREO = true;
 
 var texture;
 var camera, scene, renderer;
+var controls;
 var sections = [];
 var sectionOffset = 0;
 var position = 0;
@@ -42,7 +43,7 @@ function init() {
   document.body.appendChild( renderer.domElement );
   if (STEREO) {
     effect = new THREE.StereoEffect( renderer ); 
-    effect.eyeSeparation = 0.1;
+    effect.eyeSeparation = -0.4;
     effect.setSize( window.innerWidth, window.innerHeight );
   }
 
@@ -101,6 +102,8 @@ function animate() {
   
   position += 4*timeDiff/1000;
   camera.position.z = position;
+  if (controls)
+    controls.update(timeDiff);
 
   // now remove old sections
   if (position > sections[0].sectionEnd) {
