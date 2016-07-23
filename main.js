@@ -115,7 +115,7 @@ function checkGamepad() {
     } else if(gp.buttons[3] == 1) {
       btns |= 8;
     }
-  } else {
+  } else if (navigator.getGamepads && navigator.getGamepads()) {
     var gp = navigator.getGamepads()[0];
     if (!gp) return;
     if(gp.buttons[0].value > 0 || gp.buttons[0].pressed == true) {
@@ -126,6 +126,23 @@ function checkGamepad() {
       btns |= 4;
     } else if(gp.buttons[3].value > 0 || gp.buttons[3].pressed == true) {
       btns |= 8;
+    }
+  } else {
+    // move based on orientation
+    btns = lastGamepadBtns;
+    var v = new THREE.Vector3( 0, 0, -1 );
+    v.applyQuaternion( camera.quaternion );
+    var threshMax = 0.3;
+    var threshMin = 0.1;
+    if (btns&1) {
+      if (v.y<threshMin) btns &= ~1;
+    } else {
+      if (v.y>threshMax) btns |= 1;
+    }
+    if (btns&4) {
+      if (v.y>-threshMin) btns &= ~4;
+    } else {
+      if (v.y<threshMax) btns |= 4;
     }
   }
   var newBtn = btns & ~lastGamepadBtns;
