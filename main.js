@@ -1,3 +1,5 @@
+var STEREO = true;
+
 var texture;
 var camera, scene, renderer;
 var sections = [];
@@ -38,11 +40,28 @@ function init() {
   renderer.setPixelRatio( window.devicePixelRatio );
   renderer.setSize( window.innerWidth, window.innerHeight );
   document.body.appendChild( renderer.domElement );
+  if (STEREO) {
+    effect = new THREE.StereoEffect( renderer ); 
+    effect.eyeSeparation = 0.1;
+    effect.setSize( window.innerWidth, window.innerHeight );
+  }
 
   //
 
   window.addEventListener( 'resize', onWindowResize, false );
   window.addEventListener( 'keydown', onKeyDown, false );
+  window.addEventListener('deviceorientation', setOrientationControls, true);
+}
+
+function setOrientationControls(e) {
+  if (!e.alpha) {
+    return;
+  }
+  controls = new THREE.DeviceOrientationControls(camera, true);
+  controls.connect();
+  controls.update();
+  element.addEventListener('click', fullscreen, false);
+  window.removeEventListener('deviceorientation', setOrientationControls, true);
 }
 
 function onWindowResize() {
@@ -50,8 +69,11 @@ function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
 
-  renderer.setSize( window.innerWidth, window.innerHeight );
-
+  if (STEREO) 
+    effect.setSize( window.innerWidth, window.innerHeight );
+  else
+    renderer.setSize( window.innerWidth, window.innerHeight );
+  
 }
 
 function onKeyDown(e) {
@@ -102,5 +124,8 @@ function animate() {
 
 
   requestAnimationFrame( animate );
-  renderer.render( scene, camera );
+  if (STEREO) 
+    effect.render( scene, camera );
+  else
+    renderer.render( scene, camera );
 }
