@@ -19,7 +19,9 @@ function newSection(forceSection) {
   section.group.position.z = section.sectionStart;
   sectionOffset += section.sectionLength;
   scene.add(section.group);
-  section.start();
+  setTimeout(function() {
+    section.start();
+  }, 500);
   sections.push(section);
 }
 
@@ -39,7 +41,6 @@ function init() {
 
   newSection(0);
   newSection(0);
-  newSection();
   newSection();
 
   renderer = new THREE.WebGLRenderer();
