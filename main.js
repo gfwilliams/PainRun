@@ -28,7 +28,7 @@ function newSection(forceSection) {
 function init() {
   texture = new THREE.TextureLoader().load( 'border.png' );
   material = new THREE.MeshBasicMaterial( { map: texture } );
-  material.side = THREE.DoubleSide;
+  //material.side = THREE.DoubleSide;
 
   camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 100 );
   camera.rotation.x = Math.PI;
