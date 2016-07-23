@@ -61,7 +61,7 @@ function stopGame() {
   texture.needsUpdate = true;
   var spriteMaterial = new THREE.MeshBasicMaterial( { map: texture, color: 0xffffff } );
   spriteMaterial.side = THREE.DoubleSide;
-  var geo = new THREE.PlaneGeometry( 2, 1 );
+  var geo = new THREE.PlaneGeometry( -2, 1 );
   spritey = new THREE.Mesh( geo, spriteMaterial );
   spritey.position.set(0,0,4);
   scene.add( spritey );
