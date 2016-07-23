@@ -1,6 +1,6 @@
 var STEREO = true;
 
-var texture;
+var texture, material;
 var camera, scene, renderer;
 var controls;
 var sections = [];
@@ -12,9 +12,9 @@ var lastGamepadBtns = 0;
 init();
 animate();
 
-function newSection() {
-  var section = new Section(texture);
-  section.sectionStart = sectionOffset;
+function newSection(forceSection) {
+  var section = new Section(material, forceSection);
+  section.sectionStart = sectionOffset; 
   section.sectionEnd = sectionOffset + section.sectionLength;
   section.group.position.z = section.sectionStart;
   sectionOffset += section.sectionLength;
@@ -25,7 +25,8 @@ function newSection() {
 
 function init() {
   texture = new THREE.TextureLoader().load( 'border.png' );
-
+  material = new THREE.MeshBasicMaterial( { map: texture } );
+  material.side = THREE.DoubleSide;
 
   camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 100 );
   camera.rotation.x = Math.PI;
@@ -36,7 +37,10 @@ function init() {
   scene = new THREE.Scene();
   scene.fog = new THREE.Fog(0, 5, 10);
 
-  for (var i=0;i<3;i++) newSection();
+  newSection(0);
+  newSection(0);
+  newSection();
+  newSection();
 
   renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio( window.devicePixelRatio );
