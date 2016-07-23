@@ -1,5 +1,5 @@
 var STEREO = true;
-var STEREO_SEP = 0.4;
+var STEREO_SEP = -0.4;
 
 var materials;
 var camera, scene, renderer;
@@ -163,8 +163,8 @@ function animate() {
     }
   }
   if (spritey) {
-    spritey.rotation.x = Math.sin(time / 200)/20;
-    spritey.rotation.y = Math.sin(time / 123)/20;
+    spritey.rotation.x = Math.sin(time / 400)/10;
+    spritey.rotation.y = Math.sin(time / 567)/10;
   }
 
   camera.position.z = position;
