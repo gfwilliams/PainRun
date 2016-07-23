@@ -1,6 +1,55 @@
-var boxgeometry = new THREE.BoxBufferGeometry( 1, 1, 1);
+function getUV(v) {
+  var s = 0.3;
+  return new THREE.Vector2( 0.5+s*v.x, 0.5+s*v.y );
+}
 
-function Section(texture, forceSection) {
+var GearUVGenerator = {
+
+	generateTopUV: function ( geometry, indexA, indexB, indexC ) {
+
+		var vertices = geometry.vertices;
+
+		var a = vertices[ indexA ];
+		var b = vertices[ indexB ];
+		var c = vertices[ indexC ];
+
+		return [ getUV(a), getUV(b), getUV(c) ];
+
+	},
+
+	generateSideWallUV: function ( geometry, indexA, indexB, indexC, indexD ) {
+			return [
+				new THREE.Vector2( 0,0.5 ),
+				new THREE.Vector2( 0,0.5 ),
+				new THREE.Vector2( 1,0.5 ),
+				new THREE.Vector2( 1,0.5 )
+			];
+
+	}
+};
+
+
+var boxgeometry = new THREE.BoxBufferGeometry( 1, 1, 1);
+var geargeometry;
+{
+  var shape = new THREE.Shape();
+  var s = 1.5;
+  var ss = 0.2;
+  for (var i=0;i<=Math.PI*2;i+=0.05) {
+    var t = s + ss*Math.sin(i*16);
+    if (i==0) shape.moveTo(Math.sin(i)*t, Math.cos(i)*t);
+    else shape.lineTo(Math.sin(i)*t, Math.cos(i)*t);
+  }
+  geargeometry = new THREE.ExtrudeGeometry(shape, {
+    steps: 1,
+    amount: 0.5,
+    bevelEnabled: false,
+    UVGenerator : GearUVGenerator
+  });
+}
+
+
+function Section(forceSection) {
   var section = this;
   this.group = new THREE.Object3D();
   this.tweens = [];
@@ -29,7 +78,16 @@ function Section(texture, forceSection) {
   };
 
   this.box = function(x,y,z) {     
-    var mesh = new THREE.Mesh( boxgeometry, material );
+    var mesh = new THREE.Mesh( boxgeometry, materials.sq );
+    mesh.position.x = x;
+    mesh.position.y = y;
+    mesh.position.z = z;
+    this.group.add( mesh );
+    mesh.tween = tweener;
+    return mesh;
+  };
+  this.gear = function(x,y,z,r) {     
+    var mesh = new THREE.Mesh( geargeometry, materials.circ );
     mesh.position.x = x;
     mesh.position.y = y;
     mesh.position.z = z;
@@ -84,10 +142,10 @@ function Section(texture, forceSection) {
     pushFace( 0.5, 1,z, 1,0);
     pushFace(-0.5, 1,z, 1,0);
   }
-  var mesh = new THREE.Mesh( wallgeometry, material );
+  var mesh = new THREE.Mesh( wallgeometry, materials.sq );
   this.group.add( mesh );
 
-  var r = Math.floor(Math.random()*10);
+  var r = Math.floor(Math.random()*12);
   if (forceSection!==undefined) r=forceSection;
   var r2 = Math.floor(Math.random()*4);
   var sidex = (r2&1)?1:-1;
@@ -124,9 +182,14 @@ function Section(texture, forceSection) {
             this.box(-0.5*sidex, 0.5*sidey, z); 
             this.box(0.5*sidex, -0.5*sidey, z);  
             break;
+    case 10: this.gear(sidex, sidey, z).tween().to({rz:100}, 1000*1000);
+            break;
+    case 11: this.gear(1.5*sidex*rotate, 1.5*sidey*!rotate, z).tween().to({rz:100}, 1000*1000);
+            break;
     //
     //this.box(1.5,0.5,3.5).tween().to({x:0.5, ry:1}, 1000);
   }
+  
   
 }
 

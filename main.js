@@ -1,6 +1,6 @@
 var STEREO = true;
 
-var texture, material;
+var materials;
 var camera, scene, renderer;
 var controls;
 var sections = [];
@@ -13,7 +13,7 @@ init();
 animate();
 
 function newSection(forceSection) {
-  var section = new Section(material, forceSection);
+  var section = new Section(forceSection);
   section.sectionStart = sectionOffset; 
   section.sectionEnd = sectionOffset + section.sectionLength;
   section.group.position.z = section.sectionStart;
@@ -21,13 +21,15 @@ function newSection(forceSection) {
   scene.add(section.group);
   setTimeout(function() {
     section.start();
-  }, 500);
+  }, 500); 
   sections.push(section);
 }
 
 function init() {
-  texture = new THREE.TextureLoader().load( 'border.png' );
-  material = new THREE.MeshBasicMaterial( { map: texture } );
+  materials = {
+    sq : new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load( 'border.png' ) } ),
+    circ : new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load( 'bordercirc.png' ) } )
+  };
   //material.side = THREE.DoubleSide;
 
   camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 100 );
@@ -67,6 +69,7 @@ function animate() {
   var time = window.performance.now();
   var timeDiff = time - lastTime;
   lastTime = time;
+  if (timeDiff>100) timeDiff=100; // in case paused
 
   TWEEN.update();
   
