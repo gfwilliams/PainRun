@@ -7,6 +7,7 @@ var sections = [];
 var sectionOffset = 0;
 var position = 0;
 var lastTime = window.performance.now();
+var lastGamepadBtns = 0;
 
 init();
 animate();
@@ -52,6 +53,11 @@ function init() {
   window.addEventListener( 'resize', onWindowResize, false );
   window.addEventListener( 'keydown', onKeyDown, false );
   window.addEventListener('deviceorientation', setOrientationControls, true);
+  window.addEventListener("gamepadconnected", function(e) {
+  console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
+    e.gamepad.index, e.gamepad.id,
+    e.gamepad.buttons.length, e.gamepad.axes.length);
+});
 }
 
 function setOrientationControls(e) {
@@ -76,12 +82,15 @@ function onWindowResize() {
   
 }
 
+// Move camera
+function mv(p) {
+  new TWEEN.Tween(camera.position).to(p, 500).start();
+}
+
 function onKeyDown(e) {
   console.log(e.keyCode);
 
-  function mv(p) {
-    new TWEEN.Tween(camera.position).to(p, 500).start();
-  }
+
 
   switch(e.keyCode) {
     case 37: mv({x:-0.5}); break; // l
@@ -91,7 +100,46 @@ function onKeyDown(e) {
   };
 }
 
+
+
+function checkGamepad() {
+  var btns = 0;
+  if(navigator.webkitGetGamepads) {
+    var gp = navigator.webkitGetGamepads()[0];
+    if(gp.buttons[0] == 1) {
+      btns |= 1;
+    } else if(gp.buttons[1] == 1) {
+      btns |= 2;
+    } else if(gp.buttons[2] == 1) {
+      btns |= 4;
+    } else if(gp.buttons[3] == 1) {
+      btns |= 8;
+    }
+  } else {
+    var gp = navigator.getGamepads()[0];
+
+    if(gp.buttons[0].value > 0 || gp.buttons[0].pressed == true) {
+      btns |= 1;
+    } else if(gp.buttons[1].value > 0 || gp.buttons[1].pressed == true) {
+      btns |= 2;
+    } else if(gp.buttons[2].value > 0 || gp.buttons[2].pressed == true) {
+      btns |= 4;
+    } else if(gp.buttons[3].value > 0 || gp.buttons[3].pressed == true) {
+      btns |= 8;
+    }
+  }
+  var newBtn = btns & ~lastGamepadBtns;
+  if (newBtn&1) mv({y:0.5});
+  if (newBtn&2) mv({x:0.5});
+  if (newBtn&4) mv({x:-0.5});
+  if (newBtn&8) mv({y:-0.5});
+  lastGamepadBtns = btns;
+}
+
 function animate() {
+
+  checkGamepad();
+
   // update timing
   var time = window.performance.now();
   var timeDiff = time - lastTime;
