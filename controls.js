@@ -4,7 +4,7 @@ function mv(p) {
 }
 
 function onKeyDown(e) {
-  console.log(e.keyCode);
+  //console.log(e.keyCode);
   switch(e.keyCode) {
     case 37: mv({x:-0.5}); break; // l
     case 39: mv({x:0.5}); break; // r
