@@ -21,6 +21,10 @@ function resetGame() {
     scene.remove(sections[0].group);
     sections.shift();
   }
+  if (spritey) {
+    scene.remove(spritey);
+    spritey = undefined;
+  }
   position = 0;
   sectionOffset = 0;
 }
@@ -39,39 +43,28 @@ function stopGame() {
   resetGame();
   gameRunning = false;
 
-  spritey = makeTextSprite( "Game Over!" );
-  spritey.position.set(0,0,2);
+  var canvas = document.createElement('canvas');
+  canvas.width = 256;
+  canvas.height = 128;
+  var context = canvas.getContext('2d');
+  context.textAlign = "center"; 
+  context.strokeStyle = "white";
+  context.fillStyle = "white";
+  context.font = "48px Arial";
+  context.fillText( "Game Over!", 128, 48);
+  context.font = "32px Arial"; 
+  context.fillText( "Score: "+Math.round(score), 128, 96);
+  context.font = "24px Arial"; 
+  context.fillText( "(Click to restart)", 128, 128);
+  var texture = mapC = new THREE.Texture(canvas); 
+  texture.needsUpdate = true;
+  var spriteMaterial = new THREE.SpriteMaterial( { map: texture, color: 0xffffff } );
+  spriteMaterial.side = THREE.DoubleSide;
+  spritey = new THREE.Sprite( spriteMaterial );
+  spritey.scale.set(2,1,1);
+  spritey.position.set(0,0,4);
   scene.add( spritey );
-
 }
-
-function makeTextSprite( message  )
-{
-	var canvas = document.createElement('canvas');
-	var context = canvas.getContext('2d');
-	context.font = "Bold 64px ";
-    
-	// get size data (height depends only on font size)
-	var metrics = context.measureText( message );
-	var textWidth = metrics.width;
-	
-	context.strokeStyle = "white";
-	context.fillStyle = "white";
-
-	context.fillText( message, 0, 64);
-	
-	// canvas contents will be used for a texture
-	var texture = new THREE.Texture(canvas) 
-	texture.needsUpdate = true;
-
-	var spriteMaterial = new THREE.SpriteMaterial( 
-		{ map: texture, useScreenCoordinates: false } );
-	var sprite = new THREE.Sprite( spriteMaterial );
-        
-	sprite.scale.set(1,1,1);
-	return sprite;	
-}
-
 
 
 function newSection(forceSection) {
@@ -105,7 +98,6 @@ function init() {
   scene.fog = new THREE.Fog(0, 5, 10);
 
   resetGame();
-  //stopGame();
   newGame();
 
   renderer = new THREE.WebGLRenderer();
@@ -121,26 +113,30 @@ function init() {
   //
   setupControls();
   setupWindow();
-  
+  renderer.domElement.addEventListener('click', function() {
+    if (!gameRunning) {
+      resetGame();
+      newGame();
+    }
+  }, false);
 
 }
 
 function animate() {
 
+  // update timing
+  var time = window.performance.now();
+  var timeDiff = time - lastTime;
+  lastTime = time;
+  if (timeDiff>100) timeDiff=100; // in case paused
+
   if (gameRunning) {
     checkControls();
-
-    // update timing
-    var time = window.performance.now();
-    var timeDiff = time - lastTime;
-    lastTime = time;
-    if (timeDiff>100) timeDiff=100; // in case paused
     score += timeDiff/1000;
 
     TWEEN.update();
   
-    position += 4*timeDiff/1000;
-    camera.position.z = position;
+    position += (1+score/100)*4*timeDiff/1000;
     if (controls)
       controls.update(timeDiff);
 
@@ -162,9 +158,14 @@ function animate() {
     });
     if (collisionDists.length&1) {
       console.log("Collision! "+collisionDists.length+" at "+position);
-     // if (position>2) stopGame();
+      if (position>2) stopGame();
     }
   }
+  if (spritey) {
+    spritey.rotation.x = Math.sin(time / 200);
+  }
+
+  camera.position.z = position;
 
   requestAnimationFrame( animate );
   if (STEREO) 
