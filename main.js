@@ -43,7 +43,7 @@ function init() {
   document.body.appendChild( renderer.domElement );
   if (STEREO) {
     effect = new THREE.StereoEffect( renderer ); 
-    effect.eyeSeparation = -0.4;
+    effect.eyeSeparation = 0.4;
     effect.setSize( window.innerWidth, window.innerHeight );
   }
 
