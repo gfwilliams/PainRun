@@ -117,7 +117,7 @@ function checkGamepad() {
     }
   } else {
     var gp = navigator.getGamepads()[0];
-
+    if (!gp) return;
     if(gp.buttons[0].value > 0 || gp.buttons[0].pressed == true) {
       btns |= 1;
     } else if(gp.buttons[1].value > 0 || gp.buttons[1].pressed == true) {
