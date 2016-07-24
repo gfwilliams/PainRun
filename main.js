@@ -53,7 +53,7 @@ function stopGame() {
   context.font = "48px Arial";
   context.fillText( "Game Over!", 128, 48);
   context.font = "32px Arial"; 
-  context.fillText( "Score: "+Math.round(score), 128, 96);
+  context.fillText( "Score: "+Math.round(score*10), 128, 96);
   context.font = "24px Arial"; 
   context.fillText( "(Click to restart)", 128, 128);
   var texture = mapC = new THREE.Texture(canvas); 
@@ -81,6 +81,8 @@ function newSection(forceSection) {
 }
 
 function init() {
+  document.getElementsByTagName("body")[0].overflow = "hidden";
+
   materials = {
     sq : new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load( 'border.png' ) } ),
     circ : new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load( 'bordercirc.png' ) } )
