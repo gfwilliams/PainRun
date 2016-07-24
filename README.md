@@ -11,3 +11,6 @@ Either:
 * Click the screen in the left to go left, right for right, etc.
 * Use a gamepad (A,B,X,Y)
 * In VR, look in the direction you want to go.
+
+
+Created by [Gordon Williams](https://github.com/gfwilliams) for [JSOxford Game Dev Day 2016](http://jsoxford.com/)
