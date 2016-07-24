@@ -11,6 +11,7 @@ function onKeyDown(e) {
     case 38: mv({y:-0.5}); break; // u
     case 40: mv({y:0.5}); break; // d
   };
+  buttonPressed();
 }
 
 function checkControls() {
@@ -70,17 +71,40 @@ function checkControls() {
   if (newBtn&2) mv({x:0.5});
   if (newBtn&4) mv({x:-0.5});
   if (newBtn&8) mv({y:-0.5});
+  if (newBtn) buttonPressed();
   lastGamepadBtns = btns;
+}
+
+function onClick(e) {
+  if (e.pageX > window.innerWidth/2)
+    mv({x:0.5}); 
+  else
+    mv({x:-0.5});
+  if (e.pageY > window.innerHeight/2)
+    mv({y:0.5}); 
+  else
+    mv({y:-0.5});
+  buttonPressed();
 }
 
 function setOrientationControls(e) {
   if (!e.alpha) {
     return;
   }
-  controls = new THREE.DeviceOrientationControls(camera, true);
-  controls.connect();
-  controls.update();
-  window.removeEventListener('deviceorientation', setOrientationControls, true);
+  if (USE_GYRO) {
+    controls = new THREE.DeviceOrientationControls(camera, true);
+    controls.connect();
+    controls.update();
+    window.removeEventListener('deviceorientation', setOrientationControls, true);
+  }
+}
+
+function buttonPressed() {
+  // restart game?
+  if (!gameRunning) {
+    resetGame();
+    newGame();
+  }
 }
 
 
@@ -88,4 +112,5 @@ function setOrientationControls(e) {
 function setupControls() {
   window.addEventListener( 'keydown', onKeyDown, false );
   window.addEventListener( 'deviceorientation', setOrientationControls, true);
+  window.addEventListener('click', onClick, false);
 }

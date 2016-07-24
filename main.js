@@ -1,5 +1,6 @@
 var STEREO = true;
 var STEREO_SEP = -0.4;
+var USE_GYRO = false;
 
 var materials;
 var camera, scene, renderer;
@@ -13,9 +14,6 @@ var score = 0;
 var gameRunning = false;
 
 var spritey; // game over text
-
-init();
-animate();
 
 function resetGame() {
   while (sections.length) {
@@ -114,13 +112,9 @@ function init() {
   //
   setupControls();
   setupWindow();
-  renderer.domElement.addEventListener('click', function() {
-    if (!gameRunning) {
-      resetGame();
-      newGame();
-    }
-  }, false);
 
+  // kick off first frame
+  animate();
 }
 
 function animate() {

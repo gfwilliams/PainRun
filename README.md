@@ -8,5 +8,6 @@ Pain Run 3D
 Either:
 
 * Use the arrow keys to move into the correct location
+* Click the screen in the left to go left, right for right, etc.
 * Use a gamepad (A,B,X,Y)
 * In VR, look in the direction you want to go.
