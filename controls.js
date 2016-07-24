@@ -77,13 +77,13 @@ function checkControls() {
 
 function onClick(e) {
   if (e.pageX > window.innerWidth/2)
-    mv({x:0.5}); 
+    mv({x:-0.5}); 
   else
-    mv({x:-0.5});
+    mv({x:0.5});
   if (e.pageY > window.innerHeight/2)
-    mv({y:0.5}); 
+    mv({y:-0.5}); 
   else
-    mv({y:-0.5});
+    mv({y:0.5});
   buttonPressed();
 }
 
