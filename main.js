@@ -59,7 +59,7 @@ function stopGame() {
   texture.needsUpdate = true;
   var spriteMaterial = new THREE.MeshBasicMaterial( { map: texture, color: 0xffffff } );
   spriteMaterial.side = THREE.DoubleSide;
-  var geo = new THREE.PlaneGeometry( 2, -1 );
+  var geo = new THREE.PlaneGeometry( -2, 1 );
   spritey = new THREE.Mesh( geo, spriteMaterial );
   spritey.position.set(0,0,4);
   scene.add( spritey );
@@ -88,7 +88,7 @@ function init() {
     materials[i].side = THREE.DoubleSide;
 
   camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 100 );
-  camera.rotation.x = Math.PI;
+  camera.rotation.y = Math.PI;
   camera.position.x = -0.5;
   camera.position.y = -0.5;
   camera.position.z = 4;
@@ -124,6 +124,8 @@ function animate() {
   var timeDiff = time - lastTime;
   lastTime = time;
   if (timeDiff>100) timeDiff=100; // in case paused
+  if (controls)
+    controls.update(timeDiff);
 
   if (gameRunning) {
     checkControls();
@@ -132,8 +134,6 @@ function animate() {
     TWEEN.update();
   
     position += (1+score/100)*4*timeDiff/1000;
-    if (controls)
-      controls.update(timeDiff);
 
     // now remove old sections
     if (position > sections[0].sectionEnd) {
@@ -142,6 +142,7 @@ function animate() {
       newSection();
     }
 
+    camera.position.z = position;
     // collision
     var directionVector = new THREE.Vector3(0,0,-1);
     var ray = new THREE.Raycaster( camera.position, directionVector );
@@ -155,13 +156,14 @@ function animate() {
       console.log("Collision! "+collisionDists.length+" at "+position);
       if (position>2) stopGame();
     }
+  } else {
+    camera.position.z = position;
   }
   if (spritey) {
     spritey.rotation.x = Math.sin(time / 400)/10;
     spritey.rotation.y = Math.sin(time / 567)/10;
   }
 
-  camera.position.z = position;
 
   requestAnimationFrame( animate );
   if (STEREO) 

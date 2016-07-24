@@ -6,10 +6,10 @@ function mv(p) {
 function onKeyDown(e) {
   //console.log(e.keyCode);
   switch(e.keyCode) {
-    case 37: mv({x:-0.5}); break; // l
-    case 39: mv({x:0.5}); break; // r
-    case 38: mv({y:-0.5}); break; // u
-    case 40: mv({y:0.5}); break; // d
+    case 37: mv({x:0.5}); break; // l
+    case 39: mv({x:-0.5}); break; // r
+    case 38: mv({y:0.5}); break; // u
+    case 40: mv({y:-0.5}); break; // d
   };
   buttonPressed();
 }
