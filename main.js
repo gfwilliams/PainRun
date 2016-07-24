@@ -26,6 +26,7 @@ function resetGame() {
   }
   position = 0;
   sectionOffset = 0;
+  mv({x:0,y:0});
 }
 
 function newGame() {
@@ -61,7 +62,7 @@ function stopGame() {
   spriteMaterial.side = THREE.DoubleSide;
   var geo = new THREE.PlaneGeometry( -2, 1 );
   spritey = new THREE.Mesh( geo, spriteMaterial );
-  spritey.position.set(0,0,4);
+  spritey.position.set(0,0,3);
   scene.add( spritey );
 }
 
@@ -89,9 +90,6 @@ function init() {
 
   camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 100 );
   camera.rotation.y = Math.PI;
-  camera.position.x = -0.5;
-  camera.position.y = -0.5;
-  camera.position.z = 4;
 
   scene = new THREE.Scene();
   scene.fog = new THREE.Fog(0, 5, 10);
@@ -126,12 +124,11 @@ function animate() {
   if (timeDiff>100) timeDiff=100; // in case paused
   if (controls)
     controls.update(timeDiff);
+  checkControls();
+  TWEEN.update();
 
   if (gameRunning) {
-    checkControls();
     score += timeDiff/1000;
-
-    TWEEN.update();
   
     position += (1+score/100)*4*timeDiff/1000;
 
