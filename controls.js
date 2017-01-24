@@ -6,8 +6,8 @@ function mv(p) {
 function onKeyDown(e) {
   //console.log(e.keyCode);
   switch(e.keyCode) {
-    case 37: mv({x:0.5}); break; // l
-    case 39: mv({x:-0.5}); break; // r
+    case 37: mv({x:-0.5}); break; // l
+    case 39: mv({x:0.5}); break; // r
     case 38: mv({y:0.5}); break; // u
     case 40: mv({y:-0.5}); break; // d
   };
@@ -68,8 +68,8 @@ function checkControls() {
   }
   var newBtn = btns & ~lastGamepadBtns;
   if (newBtn&1) mv({y:0.5});
-  if (newBtn&2) mv({x:0.5});
-  if (newBtn&4) mv({x:-0.5});
+  if (newBtn&2) mv({x:-0.5});
+  if (newBtn&4) mv({x:0.5});
   if (newBtn&8) mv({y:-0.5});
   if (newBtn) buttonPressed();
   lastGamepadBtns = btns;
@@ -77,11 +77,11 @@ function checkControls() {
 
 function onClick(e) {
   if (e.pageX > window.innerWidth/2)
-    mv({x:-0.5}); 
-  else
     mv({x:0.5});
+  else
+    mv({x:-0.5});
   if (e.pageY > window.innerHeight/2)
-    mv({y:-0.5}); 
+    mv({y:-0.5});
   else
     mv({y:0.5});
   buttonPressed();
