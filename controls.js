@@ -51,14 +51,14 @@ function checkControls() {
       if (v.y>threshMax) btns |= 1;
     }
     if (btns&2) {
-      if (v.x<threshMin) btns &= ~2;
+      if (v.x>-threshMin) btns &= ~2;
     } else {
-      if (v.x>threshMax) btns |= 2;
+      if (v.x>-threshMax) btns |= 2;
     }
     if (btns&4) {
-      if (v.x>-threshMin) btns &= ~4;
+      if (v.x<threshMin) btns &= ~4;
     } else {
-      if (v.x<-threshMax) btns |= 4;
+      if (v.x<threshMax) btns |= 4;
     }
     if (btns&8) {
       if (v.y>-threshMin) btns &= ~8;
