@@ -30,3 +30,26 @@ svgDoc.getElementById("crosseyed").addEventListener('click', function() {
   USE_GYRO = false;
   initGame();
 });
+
+if ('xr' in navigator) {
+  if (navigator.xr.supportsSessionMode)
+    navigator.xr.supportsSessionMode('immersive-vr').then(() => {
+      STEREO = false;
+      USE_GYRO = false;
+      initGame();
+    });
+  else
+    navigator.xr.supportsSession('immersive-vr').then(() => {
+      STEREO = false;
+      USE_GYRO = false;
+      initGame();
+    });
+} else if ('getVRDisplays' in navigator) {
+  navigator.getVRDisplays().then(x => {
+    if (x.length==0) return;
+    // We have VR displays - skip this!
+    STEREO = false;
+    USE_GYRO = false;
+    initGame();
+  })
+}

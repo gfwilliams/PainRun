@@ -83,6 +83,12 @@ function newSection(forceSection) {
 function init() {
   document.getElementsByTagName("body")[0].overflow = "hidden";
 
+  var container = document.createElement( 'div' );
+  document.body.appendChild( container );
+
+  scene = new THREE.Scene();
+  scene.fog = new THREE.Fog(0, 5, 10);
+
   materials = {
     sq : new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load( 'border.png' ) } ),
     circ : new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load( 'bordercirc.png' ) } )
@@ -91,12 +97,16 @@ function init() {
     materials[i].side = THREE.DoubleSide;
 
   camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 100 );
+  scene.add( camera );
 
   group = new THREE.Group();
   group.rotation.y = Math.PI;
-  scene = new THREE.Scene();
-  scene.fog = new THREE.Fog(0, 5, 10);
-  scene.add(group);
+
+  groupoffset = new THREE.Group();
+  groupoffset.add(group);
+  groupoffset.position.y = 1.5;
+
+  scene.add(groupoffset);
 
   resetGame();
   newGame();
@@ -104,22 +114,25 @@ function init() {
   renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio( window.devicePixelRatio );
   renderer.setSize( window.innerWidth, window.innerHeight );
-  document.body.appendChild( renderer.domElement );
   if (STEREO) {
     effect = new THREE.StereoEffect( renderer );
     effect.eyeSeparation = STEREO_SEP;
     effect.setSize( window.innerWidth, window.innerHeight );
+  } else {
+    renderer.vr.enabled = true;
+    document.body.appendChild( WEBVR.createButton( renderer ) );
   }
+  container.appendChild( renderer.domElement );
 
   //
   setupControls();
   setupWindow();
 
-  // kick off first frame
-  animate();
+  // kick off rendering
+  renderer.setAnimationLoop( render );
 }
 
-function animate() {
+function render() {
 
   // update timing
   var time = window.performance.now();
@@ -143,7 +156,7 @@ function animate() {
       newSection();
     }
 
-    camera.position.z = -position;
+    group.position.z = position;
     // collision
     var directionVector = new THREE.Vector3(0,0,-1);
     var ray = new THREE.Raycaster( camera.position, directionVector );
@@ -158,15 +171,13 @@ function animate() {
       if (position>2) stopGame();
     }
   } else {
-    camera.position.z = -position;
+    group.position.z = position;
   }
   if (spritey) {
     spritey.rotation.x = Math.sin(time / 400)/10;
     spritey.rotation.y = Math.sin(time / 567)/10;
   }
 
-
-  requestAnimationFrame( animate );
   if (STEREO)
     effect.render( scene, camera );
   else
