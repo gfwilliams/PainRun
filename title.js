@@ -1,5 +1,5 @@
+
 var svg = document.getElementById("svg");
-var svgDoc = svg.contentDocument;
 
 function initGame() {
   svg.remove();
@@ -7,6 +7,8 @@ function initGame() {
   init();
 }
 
+function hookSVG() {
+var svgDoc = svg.contentDocument;
 svgDoc.getElementById("fullscreen").addEventListener('click', function() {
   STEREO = false;
   USE_GYRO = false;
@@ -30,6 +32,8 @@ svgDoc.getElementById("crosseyed").addEventListener('click', function() {
   USE_GYRO = false;
   initGame();
 });
+}
+
 
 if ('xr' in navigator) {
   if (navigator.xr.supportsSessionMode)
@@ -53,3 +57,6 @@ if ('xr' in navigator) {
     initGame();
   })
 }
+
+svg.addEventListener('load', hookSVG);
+hookSVG();
