@@ -118,6 +118,7 @@ function init() {
     effect = new THREE.StereoEffect( renderer );
     effect.eyeSeparation = STEREO_SEP;
     effect.setSize( window.innerWidth, window.innerHeight );
+    camera.position.y = 1.5;
   } else {
     renderer.vr.enabled = true;
     document.body.appendChild( WEBVR.createButton( renderer ) );
