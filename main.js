@@ -1,6 +1,7 @@
 var STEREO = true;
 var STEREO_SEP = -0.4;
 var USE_GYRO = false;
+var VR = false;
 
 var materials;
 var camera, scene, group, renderer;
@@ -98,6 +99,7 @@ function init() {
 
   camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 100 );
   scene.add( camera );
+  camera.position.y = 1.5; // overwritten by VR if it's set
 
   group = new THREE.Group();
   group.rotation.y = Math.PI;
@@ -118,8 +120,7 @@ function init() {
     effect = new THREE.StereoEffect( renderer );
     effect.eyeSeparation = STEREO_SEP;
     effect.setSize( window.innerWidth, window.innerHeight );
-    camera.position.y = 1.5;
-  } else {
+  } else if (VR) {
     renderer.vr.enabled = true;
     document.body.appendChild( WEBVR.createButton( renderer ) );
   }

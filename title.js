@@ -40,12 +40,14 @@ if ('xr' in navigator) {
     navigator.xr.supportsSessionMode('immersive-vr').then(() => {
       STEREO = false;
       USE_GYRO = false;
+      VR = true;
       initGame();
     });
   else
     navigator.xr.supportsSession('immersive-vr').then(() => {
       STEREO = false;
       USE_GYRO = false;
+      VR = true;
       initGame();
     });
 } else if ('getVRDisplays' in navigator) {
@@ -54,6 +56,7 @@ if ('xr' in navigator) {
     // We have VR displays - skip this!
     STEREO = false;
     USE_GYRO = false;
+    VR = true;
     initGame();
   })
 }
