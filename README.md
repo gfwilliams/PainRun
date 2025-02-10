@@ -3,6 +3,8 @@ Pain Run 3D
 
 *A bad (but ad-free!) copy of Death Run 3D... and in VR!*
 
+**This may not work in VR headsets now - Three.js needs updating**
+
 <a href="https://gfwilliams.github.io/PainRun/">Try it!</a>
 
 Either:
